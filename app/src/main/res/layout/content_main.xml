@@ -7,7 +7,7 @@
     android:layout_height="match_parent"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
     tools:showIn="@layout/activity_main"
-    tools:context="com.sogouime.hackathon4.vknowa.MainActivity">
+    tools:context="com.sogouime.hackathon4.vknowa.com.sogouime.hackathon4.vknowa.ui.MainActivity">
 
     <TextView
         android:id="@+id/sample_text"

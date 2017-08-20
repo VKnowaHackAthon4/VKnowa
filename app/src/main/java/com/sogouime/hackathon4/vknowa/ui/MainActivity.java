@@ -1,4 +1,4 @@
-package com.sogouime.hackathon4.vknowa;
+package com.sogouime.hackathon4.vknowa.com.sogouime.hackathon4.vknowa.ui;
 
 import android.os.Bundle;
 import android.widget.TextView;
@@ -9,6 +9,8 @@ import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
+
+import com.sogouime.hackathon4.vknowa.R;
 
 public class MainActivity extends AppCompatActivity {
 
