@@ -1,0 +1,7 @@
+代码布局：
+constant存储常量相关的
+entity某些封装类的内部实现
+interfaces接口相关的类
+service系统/基础服务相关
+ui窗口相关
+util封装的工具类
