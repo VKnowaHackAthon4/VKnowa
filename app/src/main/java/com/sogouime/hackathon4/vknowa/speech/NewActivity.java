@@ -1,4 +1,4 @@
-package com.sogouime.hackathon4.vknowa.speech;
+package com.sogouime.hackathon4.vknowa.com.sogouime.hackathon4.vknowa.speech;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -59,6 +59,8 @@ import com.sogou.speech.utils.FileOperator;
 import com.sogou.speech.utils.LogUtil;
 import com.util.WavUtil;
 
+import com.sogouime.hackathon4.vknowa.R;
+
 //@SuppressWarnings("unused")
 public class NewActivity extends Activity implements OutsideCallListener {
 	public static final boolean DEBUG = false;
@@ -76,6 +78,8 @@ public class NewActivity extends Activity implements OutsideCallListener {
 
 	// add UpdatePartResultThread refresh interval , current is 40 ms, 2016.4.25
 	public static final int UPDATE_RESULT_REFRESH_INTERVAL = 40;
+
+	public static final int MSG_ON_BUFFERRECEIVED = 8;
 
 	private Button mVoiceButton;
 	private TextView mVoiceStatus;
@@ -332,7 +336,16 @@ public class NewActivity extends Activity implements OutsideCallListener {
 					mCore.destroy();
 				}
 				break;
-			// add MSG_ON_PART_RESULT, 2013-09-23
+			case MSG_ON_BUFFERRECEIVED:
+				/*final ShortBuffer buf2 = ByteBuffer
+						.wrap(mWaveBuffer.toByteArray())
+						.order(ByteOrder.nativeOrder()).asShortBuffer();
+				buf2.position(0);
+				showWave(buf2, mSpeechStart / 2, mWaveBuffer.size() / 2,
+						mWaveImage);*/
+				break;
+
+				// add MSG_ON_PART_RESULT, 2013-09-23
 			case MSG_ON_PART_RESULT:
 				if(DEBUG){
 					Log.d(TAG, "-->MSG_ON_PART_RESULT,mStatus:"+mStatus);
@@ -698,7 +711,6 @@ public class NewActivity extends Activity implements OutsideCallListener {
 		mVoiceStatus = (TextView) findViewById(R.id.tvvoicestatus);
 		mResultsText = (EditText) findViewById(R.id.text);
 		mWaveImage = (ImageView) findViewById(R.id.voice_wave_image);
-		mRadioGroup = (RadioGroup) findViewById(R.id.radioGroup1);
 	}
 
 	private void setListeners() {
@@ -721,27 +733,6 @@ public class NewActivity extends Activity implements OutsideCallListener {
 				case ERROR:
 					startListening();
 					break;
-				}
-			}
-		});
-		// Radio Group Listener
-		mRadioGroup.setOnCheckedChangeListener(new OnCheckedChangeListener() {
-
-			@Override
-			public void onCheckedChanged(RadioGroup group, int id) {
-				switch(id){
-					case R.id.radio0:
-						area = 0;
-						break;
-					case R.id.radio1:
-						area = 1;
-						break;
-					case R.id.radio2:
-						area = 2;
-						break;
-					case R.id.radio3:
-						area = 3;
-						break;
 				}
 			}
 		});
@@ -897,7 +888,7 @@ public class NewActivity extends Activity implements OutsideCallListener {
 		// add isRecognizing flag, 2015-04-24
 		// add maxPureRecordingTime, 2015-05-12
 		// set isContinuous=true, test continuous online recognition 2016.3.22
-		mCore = new CoreControl(area, 5, 0, 1, 0, 0, 0, 0, 2, "", mCtx, true,
+		mCore = new CoreControl(0/*area*/, 5, 0, 1, 0, 0, 0, 0, 2, "", mCtx, true,
 				"/sdcard/", true, isRecognizing, maxPureRecordingTime);
 
 		mCore.setRecognizingListener(this);
@@ -1021,7 +1012,7 @@ public class NewActivity extends Activity implements OutsideCallListener {
 
 	@Override
 	public void onRmsChanged(float rmsdB) {
-
+		mHandler.obtainMessage(MSG_ON_BUFFERRECEIVED).sendToTarget();
 	}
 
 	// remove onResults(DecodeSpeech results), 2013-09-23

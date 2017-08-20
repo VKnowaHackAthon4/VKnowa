@@ -11,4 +11,6 @@
     <string name="cantonese">广东话</string>
     <string name="english">英语</string>
     <string name="ch_to_en">中译英</string>
+    <string name="beiwang">备忘</string>
+    <string name="chaxun">查询</string>
 </resources>
