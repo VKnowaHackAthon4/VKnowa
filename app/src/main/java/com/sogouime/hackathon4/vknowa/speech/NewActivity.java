@@ -58,6 +58,7 @@ import com.sogou.speech.listener.OutsideCallListener;
 import com.sogou.speech.utils.FileOperator;
 import com.sogou.speech.utils.LogUtil;
 import com.util.WavUtil;
+import com.sogouime.hackathon4.vknowa.R;
 
 //@SuppressWarnings("unused")
 public class NewActivity extends Activity implements OutsideCallListener {

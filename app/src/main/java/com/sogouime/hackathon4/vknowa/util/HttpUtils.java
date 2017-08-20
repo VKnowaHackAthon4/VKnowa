@@ -30,6 +30,8 @@ public class HttpUtils {
     /** equal sign **/
     public static final String EQUAL_SIGN             = "=";
 
+    private static final int TIMEOUT_IN_MILLIONS = 5000;
+
     private HttpUtils() {
         throw new AssertionError();
     }
@@ -56,8 +58,9 @@ public class HttpUtils {
             try {
                 HttpResponse response = new HttpResponse(request.getUrl());
                 // default gzip encode
-                con = (HttpURLConnection)url.openConnection();
+                con = (HttpURLConnection) url.openConnection();
                 setURLConnection(request, con);
+                //!< 提数据
                 input = new BufferedReader(new InputStreamReader(con.getInputStream()));
                 StringBuilder sb = new StringBuilder();
                 String s;
