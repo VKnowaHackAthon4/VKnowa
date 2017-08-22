@@ -5,7 +5,7 @@ package com.sogouime.hackathon4.vknowa.util;
  */
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
-import com.sogouime.hackathon4.vknowa.util.Base64Utils;
+import org.apache.commons.codec.binary.Base64;
 
 public class CryptUtils {
 
@@ -18,7 +18,7 @@ public class CryptUtils {
             SecretKeySpec secret_key = new SecretKeySpec(SecretKey.getBytes(), HMACSHA256);
             sha256_HMAC.init(secret_key);
 
-            String hash = Base64Utils.encode(sha256_HMAC.doFinal(Message.getBytes()));
+            String hash = Base64.encodeBase64String(sha256_HMAC.doFinal(Message.getBytes()));
             return  hash;
         } catch (Exception e) {
             System.out.println("Error");

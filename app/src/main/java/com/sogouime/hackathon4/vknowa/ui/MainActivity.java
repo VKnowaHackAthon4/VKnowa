@@ -1,6 +1,7 @@
-package com.sogouime.hackathon4.vknowa.com.sogouime.hackathon4.vknowa.ui;
+package com.sogouime.hackathon4.vknowa.ui;
 
 import android.os.Bundle;
+import android.widget.Button;
 import android.widget.TextView;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -11,8 +12,13 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 import com.sogouime.hackathon4.vknowa.R;
+import com.sogouime.hackathon4.vknowa.util.Http2Utils;
+import com.sogouime.hackathon4.vknowa.util.LogUtils;
+import com.sogouime.hackathon4.vknowa.util.StringUtils;
 
 public class MainActivity extends AppCompatActivity {
+
+    private Button mHttpBtn;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -20,6 +26,18 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+        //!< 测试HTTP
+        String testStr = "我把钥匙放在右边抽屉的柜子里了";
+        StringBuilder urlDeepi = new StringBuilder("http://api.ai.sogou.com/nlp/lexer");
+        urlDeepi.append("?text=");
+        urlDeepi.append(StringUtils.utf8Encode(testStr));
+        Http2Utils.doGetAsyn(urlDeepi.toString(), new Http2Utils.CallBack() {
+            @Override
+            public void onRequestComplete(String result) {
+                LogUtils.d(result);
+            }
+        });
 
        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -30,6 +48,13 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        //!< 网络测试Button
+        Button mHttpBtn = (Button)findViewById(R.id.button2);
+        mHttpBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+            }
+        });
     // Example of a call to a native method
     TextView tv = (TextView) findViewById(R.id.sample_text);
     tv.setText(stringFromJNI());
