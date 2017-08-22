@@ -6,7 +6,7 @@ android {
 
     sourceSets {
         main{
-            jniLibs.srcDirs=['libs']
+            jniLibs.srcDirs=['jniLibs']
         }
     }
     defaultConfig {
@@ -19,6 +19,7 @@ android {
         externalNativeBuild {
             cmake {
                 cppFlags "-frtti -fexceptions"
+                abiFilters "armeabi"
             }
         }
     }
@@ -32,12 +33,13 @@ android {
         cmake {
             path "CMakeLists.txt"
         }
+
     }
 }
 
 repositories {
     flatDir {
-        dirs 'libs'
+        dirs 'jniLibs'
     }
 }
 
