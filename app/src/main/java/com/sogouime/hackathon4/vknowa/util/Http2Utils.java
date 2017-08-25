@@ -6,17 +6,13 @@ package com.sogouime.hackathon4.vknowa.util;
 import com.sogouime.hackathon4.vknowa.constant.HttpConstants;
 
 import java.io.BufferedReader;
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.net.URLEncoder;
 import java.util.HashMap;
 import java.util.Map;
-import com.sogouime.hackathon4.vknowa.ui.LexerDemo;
 
 public class Http2Utils {
 
@@ -96,22 +92,13 @@ public class Http2Utils {
      */
     public static String doGet(String urlStr)
     {
-        LexerDemo.TestMain();
-
-        String url  = "http://api.ai.sogou.com/nlp/lexer";
-        String ak = "TtoAnu03oexDkwADdU3rhwH5";
-        String sk = "Y-JFvKBw8KYQ1dHZcDoyA_nh1p4Iv4qm";
         try {
-            String text = URLEncoder.encode("我把钥匙放在右边抽屉的柜子里了", "UTF-8");
-            url = String.format("%s?text=%s", url, text);
-
-            String sign = CryptUtils.sign(ak, sk, url, "GET");
-            URL obj = new URL(url);
+            String sign = CryptUtils.sign(HttpConstants.DEEPI_ACCESSKEY, HttpConstants.DEEPI_SECRETKEY, urlStr, HttpConstants.DEEPI_GET);
+            URL obj = new URL(urlStr);
             HttpURLConnection con = (HttpURLConnection) obj.openConnection();
 
             // add request header
             con.setRequestMethod("GET");
-            con.setDoOutput(true);
             con.setRequestProperty("Authorization", sign);
 
             // Send get request

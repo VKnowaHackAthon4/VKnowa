@@ -10,5 +10,6 @@ public class HttpConstants {
     public static final String DEEPI_ACCESSKEY    = "TtoAnu03oexDkwADdU3rhwH5";
     public static final String DEEPI_SECRETKEY = "Y-JFvKBw8KYQ1dHZcDoyA_nh1p4Iv4qm";
     public static final String DEEPI_AUTHORIZATION ="Authorization";
+    public static final String DEEPI_GET = "GET";
 }
 
