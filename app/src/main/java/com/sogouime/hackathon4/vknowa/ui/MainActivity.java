@@ -16,6 +16,10 @@ import com.sogouime.hackathon4.vknowa.util.Http2Utils;
 import com.sogouime.hackathon4.vknowa.util.LogUtils;
 import com.sogouime.hackathon4.vknowa.util.StringUtils;
 
+import java.io.UnsupportedEncodingException;
+import java.net.*;
+import java.nio.charset.StandardCharsets;
+
 public class MainActivity extends AppCompatActivity {
 
     private Button mHttpBtn;
@@ -27,11 +31,18 @@ public class MainActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        //!< 测试HTTP
-        String testStr = "我把钥匙放在右边抽屉的柜子里了";
         StringBuilder urlDeepi = new StringBuilder("http://api.ai.sogou.com/nlp/lexer");
         urlDeepi.append("?text=");
-        urlDeepi.append(StringUtils.utf8Encode(testStr));
+
+        try {
+            //!< 测试HTTP
+            String testStr = "我把钥匙放在右边抽屉的柜子里了";
+            urlDeepi.append((testStr != null ? URLEncoder.encode(testStr, "UTF-8") : ""));
+            //urlDeepi.append(StringUtils.utf8Encode(testStr));
+        } catch (UnsupportedEncodingException e) {
+            throw new RuntimeException("This method requires UTF-8 encoding support", e);
+        }
+
         Http2Utils.doGetAsyn(urlDeepi.toString(), new Http2Utils.CallBack() {
             @Override
             public void onRequestComplete(String result) {

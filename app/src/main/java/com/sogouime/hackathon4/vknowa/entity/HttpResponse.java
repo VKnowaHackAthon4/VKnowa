@@ -6,7 +6,6 @@ package com.sogouime.hackathon4.vknowa.entity;
 import java.util.HashMap;
 import java.util.Map;
 import com.sogouime.hackathon4.vknowa.constant.HttpConstants;
-import com.sogouime.hackathon4.vknowa.service.HttpCache;
 import com.sogouime.hackathon4.vknowa.util.HttpUtils;
 import com.sogouime.hackathon4.vknowa.util.StringUtils;
 import com.sogouime.hackathon4.vknowa.util.TimeUtils;

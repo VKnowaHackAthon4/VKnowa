@@ -13,8 +13,10 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.net.URLEncoder;
 import java.util.HashMap;
 import java.util.Map;
+import com.sogouime.hackathon4.vknowa.ui.LexerDemo;
 
 public class Http2Utils {
 
@@ -94,92 +96,41 @@ public class Http2Utils {
      */
     public static String doGet(String urlStr)
     {
-        URL url = null;
-        HttpURLConnection conn = null;
-        InputStream is = null;
-        ByteArrayOutputStream baos = null;
-        try
-        {
-            url = new URL(urlStr);
-            String paramStr = TruncateUrlPage(urlStr);
+        LexerDemo.TestMain();
 
-            conn = (HttpURLConnection) url.openConnection();
-            conn.setReadTimeout(TIMEOUT_IN_MILLIONS);
-            conn.setConnectTimeout(TIMEOUT_IN_MILLIONS);
-            conn.setRequestMethod("GET");
-            conn.setRequestProperty("accept", "*/*");
-            conn.setRequestProperty("connection", "Keep-Alive");
-            conn.setRequestProperty("Content-Type", "application/json");
+        String url  = "http://api.ai.sogou.com/nlp/lexer";
+        String ak = "TtoAnu03oexDkwADdU3rhwH5";
+        String sk = "Y-JFvKBw8KYQ1dHZcDoyA_nh1p4Iv4qm";
+        try {
+            String text = URLEncoder.encode("我把钥匙放在右边抽屉的柜子里了", "UTF-8");
+            url = String.format("%s?text=%s", url, text);
 
-            StringBuilder curTimeB = new StringBuilder();
-            curTimeB.append(System.currentTimeMillis() / 1000);
+            String sign = CryptUtils.sign(ak, sk, url, "GET");
+            URL obj = new URL(url);
+            HttpURLConnection con = (HttpURLConnection) obj.openConnection();
 
-            StringBuilder authStrB = new StringBuilder(HttpConstants.DEEPI_AUTHPREFIX_PRE);
-            authStrB.append(HttpConstants.DEEPI_STRING_SPERATE);
-            authStrB.append(HttpConstants.DEEPI_ACCESSKEY);
-            authStrB.append(HttpConstants.DEEPI_STRING_SPERATE);
-            authStrB.append(curTimeB.toString());
-            authStrB.append(HttpConstants.DEEPI_STRING_SPERATE);
-            authStrB.append(HttpConstants.DEEPI_EXPIRATIONPERIODINSECONDS);
+            // add request header
+            con.setRequestMethod("GET");
+            con.setDoOutput(true);
+            con.setRequestProperty("Authorization", sign);
 
-            StringBuilder dataB = new StringBuilder(HttpConstants.DEEPI_DATA_PREFIX);
-            dataB.append(paramStr);
+            // Send get request
+            int responseCode = con.getResponseCode();
+            System.out.println("Response Code : " + responseCode);
 
-            StringBuilder messageB = new StringBuilder(authStrB.toString());
-            messageB.append(HttpConstants.DEEPI_CONNECT);
-            messageB.append(dataB.toString());
+            BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()));
+            String inputLine;
+            StringBuffer response = new StringBuffer();
 
-            StringBuilder authoriB = new StringBuilder(authStrB.toString());
-            authoriB.append(HttpConstants.DEEPI_STRING_SPERATE);
-            authoriB.append(CryptUtils.EncodeString(HttpConstants.DEEPI_SECRETKEY, messageB.toString()));
-            conn.setRequestProperty(HttpConstants.DEEPI_AUTHORIZATION, authoriB.toString());
-
-/*            StringBuilder authoriB = new StringBuilder(HttpConstants.DEEPI_EXAMPLE_PREFIX);
-            authoriB.append(curTimeB.toString());
-            authoriB.append(HttpConstants.DEEPI_EXAMPLE_ENDFIX);
-            conn.setRequestProperty(HttpConstants.DEEPI_AUTHORIZATION, authoriB.toString());*/
-
-            int code = conn.getResponseCode();
-            if (code== 200)
-            {
-                is = conn.getInputStream();
-                baos = new ByteArrayOutputStream();
-                int len = -1;
-                byte[] buf = new byte[128];
-
-                while ((len = is.read(buf)) != -1)
-                {
-                    baos.write(buf, 0, len);
-                }
-                baos.flush();
-                return baos.toString();
-            } else
-            {
-                throw new RuntimeException(" responseCode is not 200 ... ");
+            while((inputLine = in.readLine()) != null) {
+                response.append(inputLine);
             }
-
-        } catch (Exception e)
-        {
-            e.printStackTrace();
-        } finally
-        {
-            try
-            {
-                if (is != null)
-                    is.close();
-            } catch (IOException e)
-            {
-            }
-            try
-            {
-                if (baos != null)
-                    baos.close();
-            } catch (IOException e)
-            {
-            }
-            conn.disconnect();
+            in.close();
+            // print response result
+            System.out.println(response.toString());
+        } catch (Exception e) {
+            System.out.println(e.toString());
         }
-
         return null ;
 
     }

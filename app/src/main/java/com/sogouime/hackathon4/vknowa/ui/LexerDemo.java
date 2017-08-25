@@ -1,8 +1,5 @@
-package com.sogouime.hackathon4.vknowa.util;
+package com.sogouime.hackathon4.vknowa.ui;
 
-/**
- * Created by zhusong on 2017-08-20.
- */
 import java.net.*;
 import java.nio.charset.StandardCharsets;
 
@@ -21,27 +18,24 @@ import java.util.stream.Collectors;
 import java.io.*;
 import java.lang.Math;
 
-public class CryptUtils {
-
-    public static String hmacSha256(String SecretKey, String Message)
-    {
+public class LexerDemo {
+    public static String hmacSha256(String value, String key) {
         try {
-            byte[] keyBytes = SecretKey.getBytes();
+            byte[] keyBytes = key.getBytes();
             SecretKeySpec signingKey = new SecretKeySpec(keyBytes, "HmacSHA256");
             Mac mac = Mac.getInstance("HmacSHA256");
             mac.init(signingKey);
-            byte[] rawHmac = mac.doFinal(Message.getBytes());
+            byte[] rawHmac = mac.doFinal(value.getBytes());
             return new String(Base64.getEncoder().encode(rawHmac));
         } catch(Exception e) {
             throw new RuntimeException(e);
         }
     }
-
     public static Map<String, List<String>> sortByKey(Map<String, List<String>> unsortMap) {
         Map<String, List<String>> result = unsortMap.entrySet().stream()
-                .sorted(Map.Entry.comparingByKey())
-                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue,
-                        (oldValue, newValue) -> oldValue, LinkedHashMap::new));
+            .sorted(Map.Entry.comparingByKey())
+            .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue,
+                    (oldValue, newValue) -> oldValue, LinkedHashMap::new));
         return result;
     }
 
@@ -73,21 +67,21 @@ public class CryptUtils {
                     stringBuilder.append("=");
                     stringBuilder.append((value != null ? URLEncoder.encode(value, "UTF-8") : ""));
                     stringBuilder.append("&");
-                }
+                } 
             } catch (UnsupportedEncodingException e) {
                 throw new RuntimeException("This method requires UTF-8 encoding support", e);
             }
-        }
-        return stringBuilder.toString().replaceAll("&$", "");
+         }
+         return stringBuilder.toString().replaceAll("&$", "");
     }
-
+    
     public static String sign(String ak, String sk, String url, String method) throws Exception {
         URL aUrl = new URL(url);
         String hst = aUrl.getHost();
         String uri = aUrl.getPath();
         Map<String, List<String>> query = Collections.emptyMap();
         try {
-            query = parseQuery(aUrl.getQuery());
+            query = parseQuery(aUrl.getQuery());            
         } catch (Exception e) {
             throw e;
         }
@@ -96,9 +90,44 @@ public class CryptUtils {
 
         String now = Integer.toString(Math.toIntExact(System.currentTimeMillis() / 1000L));
         String pre = "sac-auth-v1/" + ak + "/" + now + "/3600";
-        System.out.println(pre);
         String calc = pre + "\n" + method + "\n" + hst + "\n" + uri + "\n" + arg;
-        System.out.println(calc);
+
         return pre + "/" + hmacSha256(calc, sk);
+    }
+
+    public static void TestMain() {
+        String url  = "http://api.ai.sogou.com/nlp/lexer";
+        String ak = "TtoAnu03oexDkwADdU3rhwH5";
+        String sk = "Y-JFvKBw8KYQ1dHZcDoyA_nh1p4Iv4qm";
+        try {
+            String text = URLEncoder.encode("我把钥匙放在右边抽屉的柜子里了", "UTF-8");
+            url = String.format("%s?text=%s", url, text);
+
+            String sign = sign(ak, sk, url, "GET");
+            URL obj = new URL(url);
+            HttpURLConnection con = (HttpURLConnection) obj.openConnection();
+
+            // add request header
+            con.setRequestMethod("GET");
+            con.setDoOutput(true);
+            con.setRequestProperty("Authorization", sign);
+
+            // Send get request
+            int responseCode = con.getResponseCode();
+            System.out.println("Response Code : " + responseCode);
+
+            BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()));
+            String inputLine;
+            StringBuffer response = new StringBuffer();
+
+            while((inputLine = in.readLine()) != null) {
+                response.append(inputLine);
+            }
+            in.close();
+            // print response result
+            System.out.println(response.toString());
+        } catch (Exception e) {
+            System.out.println(e.toString());
+        }   
     }
 }

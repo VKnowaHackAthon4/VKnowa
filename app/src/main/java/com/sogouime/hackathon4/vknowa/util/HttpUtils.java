@@ -18,7 +18,6 @@ import android.os.AsyncTask;
 import com.sogouime.hackathon4.vknowa.constant.HttpConstants;
 import com.sogouime.hackathon4.vknowa.entity.HttpRequest;
 import com.sogouime.hackathon4.vknowa.entity.HttpResponse;
-import com.sogouime.hackathon4.vknowa.service.HttpCache;
 
 public class HttpUtils {
     /** url and para separator **/

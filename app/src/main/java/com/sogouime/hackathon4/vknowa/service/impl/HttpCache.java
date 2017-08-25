@@ -1,7 +1,7 @@
-package com.sogouime.hackathon4.vknowa.service;
+package com.sogouime.hackathon4.vknowa.service.impl;
 
 /**
- * Created by zhusong on 2017-08-20.
+ * Created by zhusong on 2017-08-25.
  */
 import java.util.ArrayList;
 import java.util.HashMap;
