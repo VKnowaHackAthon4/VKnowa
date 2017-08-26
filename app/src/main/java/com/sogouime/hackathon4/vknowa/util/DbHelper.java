@@ -17,12 +17,16 @@ public class DbHelper extends SQLiteOpenHelper {
     public void onCreate(SQLiteDatabase db) {
         db.beginTransaction();
         try {
+            /*
             db.execSQL(DbConstants.CREATE_IMAGE_SDCARD_CACHE_TABLE_SQL.toString());
             db.execSQL(DbConstants.CREATE_IMAGE_SDCARD_CACHE_TABLE_INDEX_SQL.toString());
 
             db.execSQL(DbConstants.CREATE_HTTP_CACHE_TABLE_SQL.toString());
             db.execSQL(DbConstants.CREATE_HTTP_CACHE_TABLE_INDEX_SQL.toString());
             db.execSQL(DbConstants.CREATE_HTTP_CACHE_TABLE_UNIQUE_INDEX.toString());
+            */
+            db.execSQL(DbConstants.CREATE_ORIGIN_DATA_TABLE_SQL.toString());
+            db.execSQL(DbConstants.CREATE_LEXER_WORDS_TABEL_SQL.toString());
             db.setTransactionSuccessful();
         } finally {
             db.endTransaction();

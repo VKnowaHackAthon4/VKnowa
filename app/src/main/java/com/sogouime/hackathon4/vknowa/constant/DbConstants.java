@@ -6,10 +6,18 @@ package com.sogouime.hackathon4.vknowa.constant;
 
 public class DbConstants {
 
-    public static final String       DB_NAME                                       = "vkMessage.db";
+    public static final String       DB_NAME                                       = "test1.db";
     public static final int          DB_VERSION                                    = 1;
 
     private static final String      TERMINATOR                                    = ";";
+
+    public static final StringBuffer CREATE_ORIGIN_DATA_TABLE_SQL   = new StringBuffer(
+            "CREATE TABLE origin_data(id INTEGER PRIMARY KEY AUTOINCREMENT, file_path TEXT, parsed_text TEXT, name TEXT, timestamp INTEGER)"
+    );
+    public static final StringBuffer CREATE_LEXER_WORDS_TABEL_SQL   = new StringBuffer(
+            "CREATE TABLE lexer_words(weight INTEGER, tag INTEGER, ntag INTEGER, word TEXT, fileindex INTEGER)"
+    );
+
 
     /** image sdcard cache table **/
     public static final StringBuffer CREATE_IMAGE_SDCARD_CACHE_TABLE_SQL           = new StringBuffer();
