@@ -15,7 +15,7 @@ import com.sogouime.hackathon4.vknowa.util.StringUtils;
 
 public class Controller {
 
-    public static void TransVoiceInfo(String voiceinfo) {
+    public static void TransVoiceInfo(String voiceText, String voiceFilePath) {
         new Thread()
         {
             public void run()
@@ -71,7 +71,7 @@ public class Controller {
                     StringBuilder urlLexerGet = new StringBuilder("http://api.ai.sogou.com/nlp/lexer");
                     urlLexerGet.append("?text=");
 
-                    String getParam = /*"我把钥匙放在右边抽屉的柜子里了"*//*"今天下午我想去游泳"*/voiceinfo;
+                    String getParam = /*"我把钥匙放在右边抽屉的柜子里了"*//*"今天下午我想去游泳"*/voiceText;
                     urlLexerGet.append(StringUtils.utf8Encode(getParam));
                     StringBuilder response = new StringBuilder(Http2Utils.doGet(urlLexerGet.toString()));
                     if (!response.toString().isEmpty()) {
