@@ -40,6 +40,18 @@ public class SqliteUtils {
         return instance;
     }
 
+    public static SqliteUtils getInstance()
+    {
+        if ( instance != null )
+        {
+            return instance;
+        }
+        else
+        {
+            return null;
+        }
+    }
+
     public SQLiteDatabase getDb() {
         return db;
     }
