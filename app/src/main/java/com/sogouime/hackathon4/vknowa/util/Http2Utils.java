@@ -5,7 +5,9 @@ package com.sogouime.hackathon4.vknowa.util;
  */
 import com.sogouime.hackathon4.vknowa.constant.HttpConstants;
 
+import java.net.*;
 import java.io.BufferedReader;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
@@ -13,6 +15,7 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
+import java.io.InputStream;
 
 public class Http2Utils {
 
@@ -83,22 +86,21 @@ public class Http2Utils {
 
     }
 
-    /**
-     * Get请求，获得返回数据
-     *
-     * @param urlStr
-     * @return
-     * @throws Exception
-     */
-    public static String doGet(String urlStr)
-    {
+    public static String TestMain() {
+        String url  = "http://api.ai.sogou.com/nlp/lexer";
+        String ak = "TtoAnu03oexDkwADdU3rhwH5";
+        String sk = "Y-JFvKBw8KYQ1dHZcDoyA_nh1p4Iv4qm";
         try {
-            String sign = CryptUtils.sign(HttpConstants.DEEPI_ACCESSKEY, HttpConstants.DEEPI_SECRETKEY, urlStr, HttpConstants.DEEPI_GET);
-            URL obj = new URL(urlStr);
+            String text = URLEncoder.encode("我把钥匙放在右边抽屉的柜子里了", "UTF-8");
+            url = String.format("%s?text=%s", url, text);
+
+            String sign = CryptUtils.sign(ak, sk, url, "GET");
+            URL obj = new URL(url);
             HttpURLConnection con = (HttpURLConnection) obj.openConnection();
 
             // add request header
             con.setRequestMethod("GET");
+            //con.setDoOutput(true);
             con.setRequestProperty("Authorization", sign);
 
             // Send get request
@@ -118,8 +120,77 @@ public class Http2Utils {
         } catch (Exception e) {
             System.out.println(e.toString());
         }
-        return null ;
 
+        return  null;
+    }
+
+    /**
+     * Get请求，获得返回数据
+     *
+     * @param urlStr
+     * @return
+     * @throws Exception
+     */
+    public static String doGet(String urlStr)
+    {
+        URL url = null;
+        HttpURLConnection conn = null;
+        InputStream is = null;
+        ByteArrayOutputStream baos = null;
+        try
+        {
+            url = new URL(urlStr);
+            conn = (HttpURLConnection) url.openConnection();
+            conn.setRequestMethod("GET");
+            conn.setReadTimeout(TIMEOUT_IN_MILLIONS);
+            conn.setConnectTimeout(TIMEOUT_IN_MILLIONS);
+            conn.setRequestProperty("accept", "*/*");
+            conn.setRequestProperty("connection", "Keep-Alive");
+            conn.setRequestProperty("Content-Type", "application/json");
+            String sign = CryptUtils.sign(HttpConstants.DEEPI_ACCESSKEY, HttpConstants.DEEPI_SECRETKEY, urlStr, HttpConstants.DEEPI_GET);
+            conn.setRequestProperty("Authorization", sign);
+
+            if (conn.getResponseCode() == 200)
+            {
+                is = conn.getInputStream();
+                baos = new ByteArrayOutputStream();
+                int len = -1;
+                byte[] buf = new byte[128];
+
+                while ((len = is.read(buf)) != -1)
+                {
+                    baos.write(buf, 0, len);
+                }
+                baos.flush();
+                return baos.toString();
+            } else
+            {
+                throw new RuntimeException(" responseCode is not 200 ... ");
+            }
+
+        } catch (Exception e)
+        {
+            e.printStackTrace();
+        } finally
+        {
+            try
+            {
+                if (is != null)
+                    is.close();
+            } catch (IOException e)
+            {
+            }
+            try
+            {
+                if (baos != null)
+                    baos.close();
+            } catch (IOException e)
+            {
+            }
+            conn.disconnect();
+        }
+
+        return "" ;
     }
 
     /**
@@ -142,19 +213,22 @@ public class Http2Utils {
             URL realUrl = new URL(url);
             // 打开和URL之间的连接
             HttpURLConnection conn = (HttpURLConnection) realUrl.openConnection();
+            conn.setReadTimeout(TIMEOUT_IN_MILLIONS);
+            conn.setConnectTimeout(TIMEOUT_IN_MILLIONS);
             // 设置通用的请求属性
             conn.setRequestProperty("accept", "*/*");
             conn.setRequestProperty("connection", "Keep-Alive");
             conn.setRequestMethod("POST");
-            conn.setRequestProperty("Content-Type",
-                    "application/x-www-form-urlencoded");
+            conn.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
             conn.setRequestProperty("charset", "utf-8");
+            conn.setRequestProperty("Content-Type", "application/json");
+
             conn.setUseCaches(false);
             // 发送POST请求必须设置如下两行
             conn.setDoOutput(true);
             conn.setDoInput(true);
-            conn.setReadTimeout(TIMEOUT_IN_MILLIONS);
-            conn.setConnectTimeout(TIMEOUT_IN_MILLIONS);
+            String sign = CryptUtils.sign(HttpConstants.DEEPI_ACCESSKEY, HttpConstants.DEEPI_SECRETKEY, url, HttpConstants.DEEPI_POST);
+            conn.setRequestProperty("Authorization", sign);
 
             if (param != null && !param.trim().equals(""))
             {

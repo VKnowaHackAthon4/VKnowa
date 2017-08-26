@@ -23,7 +23,7 @@ import java.lang.Math;
 
 public class CryptUtils {
 
-    public static String hmacSha256(String SecretKey, String Message)
+    public static String hmacSha256(String Message, String SecretKey)
     {
         try {
             byte[] keyBytes = SecretKey.getBytes();
@@ -96,9 +96,8 @@ public class CryptUtils {
 
         String now = Integer.toString(Math.toIntExact(System.currentTimeMillis() / 1000L));
         String pre = "sac-auth-v1/" + ak + "/" + now + "/3600";
-        System.out.println(pre);
         String calc = pre + "\n" + method + "\n" + hst + "\n" + uri + "\n" + arg;
-        System.out.println(calc);
+
         return pre + "/" + hmacSha256(calc, sk);
     }
 }

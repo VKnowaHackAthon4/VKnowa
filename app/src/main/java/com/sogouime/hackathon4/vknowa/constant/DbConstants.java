@@ -6,7 +6,7 @@ package com.sogouime.hackathon4.vknowa.constant;
 
 public class DbConstants {
 
-    public static final String       DB_NAME                                       = "trinea_android_common.db";
+    public static final String       DB_NAME                                       = "vkMessage.db";
     public static final int          DB_VERSION                                    = 1;
 
     private static final String      TERMINATOR                                    = ";";
