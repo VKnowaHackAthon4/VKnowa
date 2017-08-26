@@ -4,11 +4,17 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
 import com.hankcs.textrank.TextRankKeyword;
+import com.sogouime.hackathon4.vknowa.entity.LexerWords;
+import com.sogouime.hackathon4.vknowa.util.DataBaseDummy;
 import com.sogouime.hackathon4.vknowa.util.Http2Utils;
 import com.sogouime.hackathon4.vknowa.util.JSONUtils;
+import com.sogouime.hackathon4.vknowa.util.LexerWords_lg;
 import com.sogouime.hackathon4.vknowa.util.LogUtils;
 import com.sogouime.hackathon4.vknowa.util.SqliteUtils;
 import com.sogouime.hackathon4.vknowa.util.StringUtils;
+import com.sogouime.hackathon4.vknowa.util.VoicePlayer;
+
+import java.util.HashSet;
 
 import java.util.List;
 
@@ -100,14 +106,19 @@ public class Controller {
                         String defaultItems[] = {};
                         String returnItems[] = JSONUtils.getStringArray(response.toString(), "items", defaultItems);
 
+                        HashSet<LexerWords> itemList = new HashSet<LexerWords>();
+
                         for(int index = 0; index < returnItems.length; ++index) {
                             String returnValue = returnItems[index];
+                            LexerWords leWord = new LexerWords();
                             //!< {"item":"哎","weight":2,"pos":0,"len":1,"tag":"echo","ntag":"excl"}
                             String defaultItem = "";
                             String itemValue = JSONUtils.getString(returnValue, "item", defaultItem);
+                            leWord.SetWord(itemValue);
 
                             int defaultWeight = 0;
                             int weightValue = JSONUtils.getInt(returnValue, "weight", defaultWeight);
+                            leWord.SetWeight(weightValue);
 
                             int defaultPos = 0;
                             int PosValue = JSONUtils.getInt(returnValue, "pos", defaultPos);
@@ -118,11 +129,53 @@ public class Controller {
                             String defaultTag = "";
                             String tagValue = JSONUtils.getString(returnValue, "tag", defaultTag);
 
+
                             String defaultNtag = "";
                             String ntagValue = JSONUtils.getString(returnValue, "ntag", defaultNtag);
+                            leWord.SetNTag(ntagValue);
 
                             LogUtils.d(returnValue);
+                            itemList.add(leWord);
                         }
+
+                        if ( memoOrQuery )
+                        {
+                            // 存入数据库
+                            if ( SqliteUtils.getInstance().InsertItem(voiceText,voiceFilePath, "", itemList) )
+                            {
+                                //提示保存成功
+                            }
+                            else
+                            {
+                                //提示保存失败
+                            }
+                        }
+                        else
+                        {
+                            // 查找
+                            String voiceFile = DataBaseDummy.QueryAnswer(itemList);
+                            if ( voiceFile == null )
+                            {
+                                // 提示查找失败
+                            }
+                            // 新起线程播放音频
+                            new Thread()
+                            {
+                                public void run()
+                                {
+                                    try
+                                    {
+                                        VoicePlayer.PlayVoice(voiceFile);
+                                    } catch (Exception e)
+                                    {
+                                        e.printStackTrace();
+                                    }
+
+                                };
+                            }.start();
+
+                        }
+
                     }
 
 /*                          StringBuilder urlSemanticPost = new StringBuilder("http://api.ai.sogou.com/nlp/semantic");
