@@ -1,5 +1,7 @@
 package com.sogouime.hackathon4.vknowa.model;
 
+import com.sogouime.hackathon4.vknowa.util.SqliteUtils;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -12,41 +14,70 @@ import java.util.Map;
 
 public class TtidfModel {
 
+    private volatile static TtidfModel mModel = null;
+
     public HashMap<String,HashMap<String, Float>> m_all_tf;     // 每个文件中每个单词的频率
     public HashMap<String, Float> m_idf;    // 全局每个单词的频率
-    public HashMap<String, Integer> m_idn;  // 全局每个文件的个数
+    public HashMap<String, Integer> m_idn;  // 全局每个单词的个数
     public Integer m_totalWordNums;         // 总词数
     public Integer m_totalFileNums;         // 总文件数
-    public String m_dbName;
-    public String m_tbTFName;
-    public String m_tbIDFName;
+    public boolean m_loaded;
+
+    public TtidfModel()
+    {
+        m_totalWordNums = 0;
+        m_totalFileNums = 0;
+        m_idf = new HashMap<String, Float>();
+        m_idn = new HashMap<String, Integer>();
+        m_all_tf = new HashMap<String, HashMap<String, Float>>();
+        m_loaded = false;
+    }
+
+
+    public static TtidfModel GetInstance() {
+        if ( mModel == null ) {
+            synchronized (TtidfModel.class) {
+                if ( mModel == null ) {
+                    mModel = new TtidfModel();
+                }
+            }
+        }
+        return mModel;
+    }
 
     public void CreateAllTf()
     {
-        m_all_tf = new HashMap<String, HashMap<String, Float>>();
+        m_all_tf = SqliteUtils.getInstance().LoadTFFromDB();
+    }
+
+    public void ClearHistoryTB()
+    {
+        SqliteUtils.getInstance().ClearTables();
     }
 
     public void CreateIdf()
     {
-        m_idf = new HashMap<String, Float>();
-        m_idn = new HashMap<String, Integer>();
+        m_idf = SqliteUtils.getInstance().LoadIDFFromDB();
+        m_idn = SqliteUtils.getInstance().LoadIDNFromDB();
     }
 
-    public boolean LoadFromDB(String dbName)
+    public boolean LoadFromDB()
     {
-        m_dbName = dbName;
+        ClearHistoryTB();
         CreateAllTf();
         CreateIdf();
+        m_totalFileNums = SqliteUtils.getInstance().GetTotalFiles();
+        m_loaded = true;
         return true;
     }
 
-    public boolean SaveToDB(String dbName)
+    public boolean SaveToDB()
     {
-
+        SqliteUtils.getInstance().SaveIDNToDB(m_idn, m_idf);
         return true;
     }
 
-    public String queryHighestMatchFile(ArrayList<String> wordsInQuery)
+    public String queryHighestMatchFile(List<String> wordsInQuery)
     {
         Iterator iter = m_all_tf.entrySet().iterator();
         HashMap<String, Float> result = new HashMap<String, Float>();
@@ -70,8 +101,8 @@ public class TtidfModel {
         String resFileName = "";
         Iterator iterRes = result.entrySet().iterator();
         while(iterRes.hasNext()){
-            Map.Entry entry = (Map.Entry)iter.next();
-            Float fre = Float.parseFloat(entry.getValue().toString());
+            Map.Entry entry = (Map.Entry)iterRes.next();
+            float fre = Float.parseFloat(entry.getValue().toString());
             if( maxFre < fre ) {
                 maxFre = fre;
                 resFileName = entry.getKey().toString();
@@ -80,8 +111,11 @@ public class TtidfModel {
         return resFileName;
     }
 
-    public boolean insertNewMemo(String filename, String rawText, ArrayList<String> words)
+    public boolean insertNewMemo(String filename, String rawText, List<String> words)
     {
+        if( !m_loaded ) {
+            LoadFromDB();
+        }
         int m_curWordNums = words.size();
         m_totalWordNums += m_curWordNums;
         m_totalFileNums += 1;
@@ -118,8 +152,9 @@ public class TtidfModel {
             m_idf.put(entry.getKey().toString(), value);
         }
 
+        SqliteUtils.getInstance().SaveTFToDB(filename, resTF);
+
         return true;
     }
-
 
 }

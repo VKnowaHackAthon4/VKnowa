@@ -10,7 +10,7 @@ import com.sogouime.hackathon4.vknowa.constant.DbConstants;
 
 public class DbHelper extends SQLiteOpenHelper {
     public DbHelper(Context context) {
-        super(context, DbConstants.DB_NAME, null, DbConstants.DB_VERSION);
+        super(context, DbConstants.DB_NAME, null, 3);
     }
 
     @Override
@@ -27,6 +27,9 @@ public class DbHelper extends SQLiteOpenHelper {
             */
             db.execSQL(DbConstants.CREATE_ORIGIN_DATA_TABLE_SQL.toString());
             db.execSQL(DbConstants.CREATE_LEXER_WORDS_TABEL_SQL.toString());
+            db.execSQL(DbConstants.CREATE_TFIDF_TABEL_1_SQL.toString());
+            db.execSQL(DbConstants.CREATE_TFIDF_TABEL_2_SQL.toString());
+            db.execSQL(DbConstants.CREATE_TFIDF_TABEL_3_SQL.toString());
             db.setTransactionSuccessful();
         } finally {
             db.endTransaction();
@@ -34,5 +37,25 @@ public class DbHelper extends SQLiteOpenHelper {
     }
 
     @Override
-    public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {}
+    public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
+        db.beginTransaction();
+        try {
+            /*
+            db.execSQL(DbConstants.CREATE_IMAGE_SDCARD_CACHE_TABLE_SQL.toString());
+            db.execSQL(DbConstants.CREATE_IMAGE_SDCARD_CACHE_TABLE_INDEX_SQL.toString());
+
+            db.execSQL(DbConstants.CREATE_HTTP_CACHE_TABLE_SQL.toString());
+            db.execSQL(DbConstants.CREATE_HTTP_CACHE_TABLE_INDEX_SQL.toString());
+            db.execSQL(DbConstants.CREATE_HTTP_CACHE_TABLE_UNIQUE_INDEX.toString());
+            */
+            db.execSQL(DbConstants.CREATE_ORIGIN_DATA_TABLE_SQL.toString());
+            db.execSQL(DbConstants.CREATE_LEXER_WORDS_TABEL_SQL.toString());
+            db.execSQL(DbConstants.CREATE_TFIDF_TABEL_1_SQL.toString());
+            db.execSQL(DbConstants.CREATE_TFIDF_TABEL_2_SQL.toString());
+            db.execSQL(DbConstants.CREATE_TFIDF_TABEL_3_SQL.toString());
+            db.setTransactionSuccessful();
+        } finally {
+            db.endTransaction();
+        }
+    }
 }

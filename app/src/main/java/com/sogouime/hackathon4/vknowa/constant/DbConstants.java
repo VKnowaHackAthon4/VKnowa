@@ -12,10 +12,20 @@ public class DbConstants {
     private static final String      TERMINATOR                                    = ";";
 
     public static final StringBuffer CREATE_ORIGIN_DATA_TABLE_SQL   = new StringBuffer(
-            "CREATE TABLE origin_data(id INTEGER PRIMARY KEY AUTOINCREMENT, file_path TEXT, parsed_text TEXT, name TEXT, timestamp INTEGER)"
+            "CREATE TABLE IF NOT EXISTS origin_data(id INTEGER PRIMARY KEY AUTOINCREMENT, file_path TEXT, parsed_text TEXT, name TEXT, timestamp INTEGER)"
     );
     public static final StringBuffer CREATE_LEXER_WORDS_TABEL_SQL   = new StringBuffer(
-            "CREATE TABLE lexer_words(weight INTEGER, tag INTEGER, ntag INTEGER, word TEXT, fileindex INTEGER)"
+            "CREATE TABLE IF NOT EXISTS lexer_words(weight INTEGER, tag INTEGER, ntag INTEGER, word TEXT, fileindex INTEGER)"
+    );
+
+    public static final StringBuffer CREATE_TFIDF_TABEL_1_SQL   = new StringBuffer(
+            "CREATE TABLE IF NOT EXISTS hwd_table1 (word TEXT, num INTEGER, idffre REAL)"
+    );
+    public static final StringBuffer CREATE_TFIDF_TABEL_2_SQL   = new StringBuffer(
+            "CREATE TABLE IF NOT EXISTS hwd_table2 (id INTEGER autoincrement, filename TEXT, UNIQUE(id))"
+    );
+    public static final StringBuffer CREATE_TFIDF_TABEL_3_SQL   = new StringBuffer(
+            "CREATE TABLE IF NOT EXISTS hwd_table3 (id INTEGER, word TEXT, tffre REAL, UNIQUE(id, word))"
     );
 
 

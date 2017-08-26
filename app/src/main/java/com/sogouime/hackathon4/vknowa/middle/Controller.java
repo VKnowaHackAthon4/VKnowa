@@ -6,6 +6,7 @@ import android.database.sqlite.SQLiteDatabase;
 
 import com.hankcs.textrank.TextRankKeyword;
 import com.sogouime.hackathon4.vknowa.entity.LexerWords;
+import com.sogouime.hackathon4.vknowa.model.TtidfModel;
 import com.sogouime.hackathon4.vknowa.speech.NewActivity;
 import com.sogouime.hackathon4.vknowa.util.DataBaseDummy;
 import com.sogouime.hackathon4.vknowa.util.Http2Utils;
@@ -16,6 +17,8 @@ import com.sogouime.hackathon4.vknowa.util.SqliteUtils;
 import com.sogouime.hackathon4.vknowa.util.StringUtils;
 import com.sogouime.hackathon4.vknowa.util.VoicePlayer;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashSet;
 
 import java.util.List;
@@ -159,13 +162,14 @@ public class Controller {
                             LogUtils.d(returnValue);
                             itemList.add(leWord);
                         }
+                        List<String> wordList = Arrays.asList(itemKeyText);
 
                         //!< 完整数据传递给TFIDF算法处理
 
                         if ( memoOrQuery )
                         {
                             // 存入数据库
-                            if ( SqliteUtils.getInstance(mContext).InsertItem(voiceText,voiceFilePath, "", itemList) )
+                            /*if ( SqliteUtils.getInstance(mContext).InsertItem(voiceText,voiceFilePath, "", itemList) )
                             {
                                 //提示保存成功
                             }
@@ -173,11 +177,14 @@ public class Controller {
                             {
                                 //提示保存失败
                             }
+                            */
+                            TtidfModel.GetInstance().insertNewMemo(voiceFilePath, voiceText, wordList);
                         }
                         else
                         {
                             // 查找
-                            String voiceFile = DataBaseDummy.QueryAnswer(itemList);
+                            //String voiceFile = DataBaseDummy.QueryAnswer(itemList);
+                            String voiceFile = TtidfModel.GetInstance().queryHighestMatchFile(wordList);
                             if ( voiceFile == null )
                             {
                                 // 提示查找失败

@@ -58,6 +58,8 @@ import com.sogou.speech.listener.OutsideCallListener;
 import com.sogou.speech.utils.FileOperator;
 import com.sogou.speech.utils.LogUtil;
 import com.sogouime.hackathon4.vknowa.middle.Controller;
+import com.sogouime.hackathon4.vknowa.model.TtidfModel;
+import com.sogouime.hackathon4.vknowa.util.SqliteUtils;
 import com.util.WavUtil;
 import com.sogouime.hackathon4.vknowa.R;
 
@@ -673,6 +675,7 @@ public class NewActivity extends Activity implements OutsideCallListener {
 		
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_new);
+
 		
 		LogUtil.setDebug(true);
 		
@@ -686,6 +689,7 @@ public class NewActivity extends Activity implements OutsideCallListener {
 		//!< 保存全局数据
 		Controller.setNewActivity(this);
 		Controller.setApplicationContext(getApplicationContext());
+		SqliteUtils.getInstance(getApplicationContext());
 	}
 
 	// add initReceiver, 2014-04-01
@@ -704,6 +708,8 @@ public class NewActivity extends Activity implements OutsideCallListener {
 	@Override
 	protected void onDestroy() {
 		super.onDestroy();
+
+		TtidfModel.GetInstance().SaveToDB();
 
 		// unregister homePressReceiver, 2014-04-01
 		if (homePressReceiver != null) {
