@@ -82,6 +82,7 @@ public class NewActivity extends Activity implements OutsideCallListener {
 	public static final int UPDATE_RESULT_REFRESH_INTERVAL = 40;
 
 	public static final int MSG_ON_BUFFERRECEIVED = 8;
+	public static final int MSG_ON_SAVEFILE_FINISH = 9;
 
 	private Button mVoiceButton;
 	private TextView mVoiceStatus;
@@ -165,7 +166,11 @@ public class NewActivity extends Activity implements OutsideCallListener {
 	private short[] wavInPre = new short[order];
 	private double[] dataPre = new double[order];
 
-	private  String mVoiceFilePath = "";
+	private String mVoiceFilePath = "";
+	private String mVoiceRawText = "";
+
+	private boolean mAlreadySend = false;
+
 	// add Audio Focus related parameters, 2015-08-27
 	private AudioManager mAudioManager = null;
 	OnAudioFocusChangeListener afChangeListener = new OnAudioFocusChangeListener() {
@@ -241,7 +246,21 @@ public class NewActivity extends Activity implements OutsideCallListener {
 				displayContent.delete(0, displayContent.length());
 				displayContent.append(deContents);
 				mResultsText.setText(displayContent.toString());
-				Controller.TransVoiceInfo(displayContent.toString(), getVoiceFilePath());
+
+				mVoiceRawText = displayContent.toString();
+				if(!mVoiceFilePath.isEmpty())
+				{
+					Controller.TransVoiceInfo(displayContent.toString(), getVoiceFilePath());
+					mAlreadySend = true;
+				}
+				break;
+
+			case MSG_ON_SAVEFILE_FINISH:
+				if(!mAlreadySend && !mVoiceRawText.isEmpty())
+				{
+					Controller.TransVoiceInfo(displayContent.toString(), getVoiceFilePath());
+					mAlreadySend = true;
+				}
 				break;
 
 			case MSG_ON_RECORDSTOP:
@@ -555,6 +574,8 @@ public class NewActivity extends Activity implements OutsideCallListener {
 			fos.flush();
 			fos.close();
 			mVoiceFilePath = filename;
+			Message msg = mHandler.obtainMessage(MSG_ON_SAVEFILE_FINISH);
+			msg.sendToTarget();
 		} catch (Exception e) {
 			e.printStackTrace();
 			if (fos != null) {
@@ -869,7 +890,10 @@ public class NewActivity extends Activity implements OutsideCallListener {
 		maxRecordingShorts = -1;
 		realSampleRate = -1;
 		targetSampleRate = -1;
+
 		mVoiceFilePath = "";
+		mVoiceRawText = "";
+		mAlreadySend = false;
 
 		// initialize wavInPre and dataPre, 2015-05-17
 		Arrays.fill(wavInPre, (short) 0);
