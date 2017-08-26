@@ -6,6 +6,7 @@ import android.database.sqlite.SQLiteDatabase;
 
 import com.hankcs.textrank.TextRankKeyword;
 import com.sogouime.hackathon4.vknowa.entity.LexerWords;
+import com.sogouime.hackathon4.vknowa.speech.NewActivity;
 import com.sogouime.hackathon4.vknowa.util.DataBaseDummy;
 import com.sogouime.hackathon4.vknowa.util.Http2Utils;
 import com.sogouime.hackathon4.vknowa.util.JSONUtils;
@@ -25,6 +26,7 @@ import java.util.List;
 
 public class Controller {
     private static  Context mContext = null;
+    private static NewActivity mNewActivity = null;
 
     public  static void setApplicationContext(Context context1) {
         mContext = context1;
@@ -32,6 +34,14 @@ public class Controller {
 
     public  static Context getApplicationContext() {
         return mContext;
+    }
+
+    public  static void setNewActivity(NewActivity newActivity1) {
+        mNewActivity = newActivity1;
+    }
+
+    public  static NewActivity getNewActivity() {
+        return mNewActivity;
     }
 
     public static void TransVoiceInfo(String voiceText, String voiceFilePath, boolean memoOrQuery) {
@@ -89,7 +99,7 @@ public class Controller {
                 {
                     StringBuilder urlLexerGet = new StringBuilder("http://api.ai.sogou.com/nlp/lexer");
                     urlLexerGet.append("?text=");
-                    String keyowrd = TextRankKeyword.ConvertKeyword(voiceText);
+                    //String keyowrd = TextRankKeyword.ConvertKeyword(voiceText);
 
                     String voiceFilePathDummy = voiceFilePath;
                     String getParam = /*"我把钥匙放在右边抽屉的柜子里了"*//*"今天下午我想去游泳"*/voiceText;
@@ -117,6 +127,7 @@ public class Controller {
                         String returnItems[] = JSONUtils.getStringArray(response.toString(), "items", defaultItems);
 
                         HashSet<LexerWords> itemList = new HashSet<LexerWords>();
+                        String itemKeyText[] = new String[returnItems.length];
 
                         for(int index = 0; index < returnItems.length; ++index) {
                             String returnValue = returnItems[index];
@@ -125,6 +136,7 @@ public class Controller {
                             String defaultItem = "";
                             String itemValue = JSONUtils.getString(returnValue, "item", defaultItem);
                             leWord.SetWord(itemValue);
+                            itemKeyText[index] = itemValue;
 
                             int defaultWeight = 0;
                             int weightValue = JSONUtils.getInt(returnValue, "weight", defaultWeight);
@@ -147,6 +159,8 @@ public class Controller {
                             LogUtils.d(returnValue);
                             itemList.add(leWord);
                         }
+
+                        //!< 完整数据传递给TFIDF算法处理
 
                         if ( memoOrQuery )
                         {

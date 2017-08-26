@@ -4,6 +4,7 @@ package com.sogouime.hackathon4.vknowa.util;
  * Created by liugao on 2017/8/26.
  */
 import com.sogouime.hackathon4.vknowa.entity.LexerWords;
+import com.sogouime.hackathon4.vknowa.middle.Controller;
 
 import java.util.Collection;
 import java.util.Collections;
@@ -72,7 +73,7 @@ public class DataBaseDummy {
         for ( Iterator<LexerWords> iter = lexerWords.iterator(); iter.hasNext(); )
         {
             LexerWords element = iter.next();
-            List<Integer> listTemp = SqliteUtils.getInstance().Search(element.GetWord(), element.GetNTag());
+            List<Integer> listTemp = SqliteUtils.getInstance(Controller.getApplicationContext()).Search(element.GetWord(), element.GetNTag());
             if ( !listTemp.isEmpty() )
             {
                 listStart.addAll(listTemp);
@@ -89,7 +90,7 @@ public class DataBaseDummy {
         {
             return null;
         }
-        String voiceOut = SqliteUtils.getInstance().GetOriginFilePathByIndex(maxList.get(0));
+        String voiceOut = SqliteUtils.getInstance(Controller.getApplicationContext()).GetOriginFilePathByIndex(maxList.get(0));
         return voiceOut;
     }
 }

@@ -11,8 +11,7 @@ import java.util.*;
  */
 public class TextRankKeyword
 {
-    //public static final int nKeyword = 10;
-    public static final int nKeyword = 5;
+    public static final int nKeyword = 10;
     /**
      * 阻尼系数（ＤａｍｐｉｎｇＦａｃｔｏｒ），一般取值为0.85
      */
@@ -20,8 +19,7 @@ public class TextRankKeyword
     /**
      * 最大迭代次数
      */
-    //static final int max_iter = 200;
-    static final int max_iter = 20;
+    static final int max_iter = 200;
     static final float min_diff = 0.001f;
 
     public TextRankKeyword()
