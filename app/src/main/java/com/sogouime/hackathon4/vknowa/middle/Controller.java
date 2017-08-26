@@ -1,5 +1,6 @@
 package com.sogouime.hackathon4.vknowa.middle;
 
+import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
@@ -23,6 +24,15 @@ import java.util.List;
  */
 
 public class Controller {
+    private static  Context mContext = null;
+
+    public  static void setApplicationContext(Context context1) {
+        mContext = context1;
+    }
+
+    public  static Context getApplicationContext() {
+        return mContext;
+    }
 
     public static void TransVoiceInfo(String voiceText, String voiceFilePath, boolean memoOrQuery) {
         new Thread()
@@ -141,7 +151,7 @@ public class Controller {
                         if ( memoOrQuery )
                         {
                             // 存入数据库
-                            if ( SqliteUtils.getInstance().InsertItem(voiceText,voiceFilePath, "", itemList) )
+                            if ( SqliteUtils.getInstance(mContext).InsertItem(voiceText,voiceFilePath, "", itemList) )
                             {
                                 //提示保存成功
                             }

@@ -682,6 +682,8 @@ public class NewActivity extends Activity implements OutsideCallListener {
 		initReceiver();
 		// set value for mAudioManager, 2015-08-27
 		mAudioManager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
+
+		Controller.setApplicationContext(getApplicationContext());
 	}
 
 	// add initReceiver, 2014-04-01
