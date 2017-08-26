@@ -85,6 +85,7 @@ public class NewActivity extends Activity implements OutsideCallListener {
 	public static final int MSG_ON_SAVEFILE_FINISH = 9;
 
 	private Button mVoiceButton;
+	private Button mQueryButton;
 	private TextView mVoiceStatus;
 	private EditText mResultsText;
 	private ImageView mWaveImage;
@@ -170,6 +171,7 @@ public class NewActivity extends Activity implements OutsideCallListener {
 	private String mVoiceRawText = "";
 
 	private boolean mAlreadySend = false;
+	private boolean mMemoOrQuery = true;
 
 	// add Audio Focus related parameters, 2015-08-27
 	private AudioManager mAudioManager = null;
@@ -250,7 +252,7 @@ public class NewActivity extends Activity implements OutsideCallListener {
 				mVoiceRawText = displayContent.toString();
 				if(!mVoiceFilePath.isEmpty())
 				{
-					Controller.TransVoiceInfo(displayContent.toString(), getVoiceFilePath());
+					Controller.TransVoiceInfo(displayContent.toString(), getVoiceFilePath(), mMemoOrQuery);
 					mAlreadySend = true;
 				}
 				break;
@@ -258,7 +260,7 @@ public class NewActivity extends Activity implements OutsideCallListener {
 			case MSG_ON_SAVEFILE_FINISH:
 				if(!mAlreadySend && !mVoiceRawText.isEmpty())
 				{
-					Controller.TransVoiceInfo(displayContent.toString(), getVoiceFilePath());
+					Controller.TransVoiceInfo(displayContent.toString(), getVoiceFilePath(), mMemoOrQuery);
 					mAlreadySend = true;
 				}
 				break;
@@ -734,6 +736,7 @@ public class NewActivity extends Activity implements OutsideCallListener {
 
 	private void bindViews() {
 		mVoiceButton = (Button) findViewById(R.id.button1);
+		mQueryButton = (Button) findViewById(R.id.button2);
 		mVoiceStatus = (TextView) findViewById(R.id.tvvoicestatus);
 		mResultsText = (EditText) findViewById(R.id.text);
 		mWaveImage = (ImageView) findViewById(R.id.voice_wave_image);
@@ -741,27 +744,37 @@ public class NewActivity extends Activity implements OutsideCallListener {
 
 	private void setListeners() {
 		// Click Listener
-		mVoiceButton.setOnClickListener(new View.OnClickListener() {
+		View.OnClickListener listener = new View.OnClickListener() {
 
 			@Override
 			public void onClick(View v) {
+				if ( v.getId() == R.id.button1 )
+				{
+					mMemoOrQuery = true;
+				}
+				else if ( v.getId() == R.id.button2 )
+				{
+					mMemoOrQuery = false;
+				}
 				switch (mStatus) {
-				case LISTENING:
-					stopListening();
-					// showDefault();
-					break;
-				case WORKING:
-					cancelListening();
-					break;
-				case DEFAULT:
-					startListening();
-					break;
-				case ERROR:
-					startListening();
-					break;
+					case LISTENING:
+						stopListening();
+						// showDefault();
+						break;
+					case WORKING:
+						cancelListening();
+						break;
+					case DEFAULT:
+						startListening();
+						break;
+					case ERROR:
+						startListening();
+						break;
 				}
 			}
-		});
+		};
+		mVoiceButton.setOnClickListener(listener);
+		mQueryButton.setOnClickListener(listener);
 	}
 
 	@Override
