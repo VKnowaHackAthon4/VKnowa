@@ -15,7 +15,7 @@ import com.sogouime.hackathon4.vknowa.util.StringUtils;
 
 public class Controller {
 
-    public static void TransVoiceInfo(String voiceText, String voiceFilePath) {
+    public static void TransVoiceInfo(String voiceText, String voiceFilePath, boolean memoOrQuery) {
         new Thread()
         {
             public void run()
@@ -98,6 +98,25 @@ public class Controller {
 
                         for(int index = 0; index < returnItems.length; ++index) {
                             String returnValue = returnItems[index];
+                            //!< {"item":"哎","weight":2,"pos":0,"len":1,"tag":"echo","ntag":"excl"}
+                            String defaultItem = "";
+                            String itemValue = JSONUtils.getString(returnValue, "item", defaultItem);
+
+                            int defaultWeight = 0;
+                            int weightValue = JSONUtils.getInt(returnValue, "weight", defaultWeight);
+
+                            int defaultPos = 0;
+                            int PosValue = JSONUtils.getInt(returnValue, "pos", defaultPos);
+
+                            int defaultLen = 0;
+                            int lenValue = JSONUtils.getInt(returnValue, "len", defaultLen);
+
+                            String defaultTag = "";
+                            String tagValue = JSONUtils.getString(returnValue, "tag", defaultTag);
+
+                            String defaultNtag = "";
+                            String ntagValue = JSONUtils.getString(returnValue, "ntag", defaultNtag);
+
                             LogUtils.d(returnValue);
                         }
                     }
