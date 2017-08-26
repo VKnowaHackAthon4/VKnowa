@@ -3,11 +3,14 @@ package com.sogouime.hackathon4.vknowa.middle;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
+import com.hankcs.textrank.TextRankKeyword;
 import com.sogouime.hackathon4.vknowa.util.Http2Utils;
 import com.sogouime.hackathon4.vknowa.util.JSONUtils;
 import com.sogouime.hackathon4.vknowa.util.LogUtils;
 import com.sogouime.hackathon4.vknowa.util.SqliteUtils;
 import com.sogouime.hackathon4.vknowa.util.StringUtils;
+
+import java.util.List;
 
 /**
  * Created by zhusong on 2017-08-26.
@@ -70,6 +73,7 @@ public class Controller {
                 {
                     StringBuilder urlLexerGet = new StringBuilder("http://api.ai.sogou.com/nlp/lexer");
                     urlLexerGet.append("?text=");
+                    String keyowrd = TextRankKeyword.ConvertKeyword(voiceText);
 
                     String voiceFilePathDummy = voiceFilePath;
                     String getParam = /*"我把钥匙放在右边抽屉的柜子里了"*//*"今天下午我想去游泳"*/voiceText;

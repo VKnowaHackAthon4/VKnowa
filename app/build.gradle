@@ -60,5 +60,7 @@ dependencies {
     compile 'com.android.support.constraint:constraint-layout:1.0.2'
     compile 'com.android.support:design:26.+'
     compile(name: 'speech-release', ext: 'aar')
+    compile files('ansj_seg-1.4.1-min.jar')
+    compile files('tree_split-1.4.jar')
     testCompile 'junit:junit:4.12'
 }

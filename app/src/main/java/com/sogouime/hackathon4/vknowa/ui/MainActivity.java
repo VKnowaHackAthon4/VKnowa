@@ -61,7 +61,7 @@ public class MainActivity extends AppCompatActivity {
                 {
                     public void run()
                     {
-                        //SQLiteDatabase dataBase = /*SqliteUtils.getInstance(getApplicationContext())*/SQLiteDatabase.openOrCreateDatabase("/data/data/com.sogouime.hackthon4.vknowa/databases/message.db", null);  ;
+                        //SQLiteDatabase dataBase = /*SqliteUtils.getInstance(getApplicationContext())*/SQLiteDatabase.openOrCreateDatabase("/data/data/com.sogouime.hackthon4.vknowa/databases/message.db", null);
 
                         SQLiteDatabase dataBase = SqliteUtils.getInstance(getApplicationContext()).getDb();
                         String sqlCreate="create table voiceinfo(_id integer primary key autoincrement,sname text,snumber text)";//执行SQL语句
