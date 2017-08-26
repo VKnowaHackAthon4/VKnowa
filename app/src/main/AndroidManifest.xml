@@ -20,7 +20,7 @@
         android:theme="@style/AppTheme"
         android:minSdkVersion = "26" >
         <activity
-            android:name=".ui.MainActivity"
+            android:name=".speech.NewActivity"
             android:label="@string/app_name"
             android:theme="@style/AppTheme.NoActionBar" >
             <intent-filter>

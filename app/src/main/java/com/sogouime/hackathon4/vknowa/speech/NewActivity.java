@@ -57,6 +57,7 @@ import com.sogou.speech.framework.CoreControl;
 import com.sogou.speech.listener.OutsideCallListener;
 import com.sogou.speech.utils.FileOperator;
 import com.sogou.speech.utils.LogUtil;
+import com.sogouime.hackathon4.vknowa.middle.Controller;
 import com.util.WavUtil;
 import com.sogouime.hackathon4.vknowa.R;
 
@@ -164,6 +165,7 @@ public class NewActivity extends Activity implements OutsideCallListener {
 	private short[] wavInPre = new short[order];
 	private double[] dataPre = new double[order];
 
+	private  String mVoiceFilePath = "";
 	// add Audio Focus related parameters, 2015-08-27
 	private AudioManager mAudioManager = null;
 	OnAudioFocusChangeListener afChangeListener = new OnAudioFocusChangeListener() {
@@ -239,6 +241,7 @@ public class NewActivity extends Activity implements OutsideCallListener {
 				displayContent.delete(0, displayContent.length());
 				displayContent.append(deContents);
 				mResultsText.setText(displayContent.toString());
+				Controller.TransVoiceInfo(displayContent.toString(), getVoiceFilePath());
 				break;
 
 			case MSG_ON_RECORDSTOP:
@@ -551,6 +554,7 @@ public class NewActivity extends Activity implements OutsideCallListener {
 					targetSampleRate, targetChannels);
 			fos.flush();
 			fos.close();
+			mVoiceFilePath = filename;
 		} catch (Exception e) {
 			e.printStackTrace();
 			if (fos != null) {
@@ -865,6 +869,7 @@ public class NewActivity extends Activity implements OutsideCallListener {
 		maxRecordingShorts = -1;
 		realSampleRate = -1;
 		targetSampleRate = -1;
+		mVoiceFilePath = "";
 
 		// initialize wavInPre and dataPre, 2015-05-17
 		Arrays.fill(wavInPre, (short) 0);
@@ -1009,6 +1014,10 @@ public class NewActivity extends Activity implements OutsideCallListener {
 				targetSampleRate = wantedSampleRate;
 			}
 		}
+	}
+
+	public String getVoiceFilePath() {
+		return  mVoiceFilePath;
 	}
 
 	@Override

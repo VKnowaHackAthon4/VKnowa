@@ -71,6 +71,7 @@ public class Controller {
                     StringBuilder urlLexerGet = new StringBuilder("http://api.ai.sogou.com/nlp/lexer");
                     urlLexerGet.append("?text=");
 
+                    String voiceFilePathDummy = voiceFilePath;
                     String getParam = /*"我把钥匙放在右边抽屉的柜子里了"*//*"今天下午我想去游泳"*/voiceText;
                     urlLexerGet.append(StringUtils.utf8Encode(getParam));
                     StringBuilder response = new StringBuilder(Http2Utils.doGet(urlLexerGet.toString()));
