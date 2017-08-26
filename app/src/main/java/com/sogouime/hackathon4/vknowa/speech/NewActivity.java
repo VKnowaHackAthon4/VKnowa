@@ -1,4 +1,4 @@
-package com.sogouime.hackathon4.vknowa.com.sogouime.hackathon4.vknowa.speech;
+package com.sogouime.hackathon4.vknowa.speech;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
