@@ -3,6 +3,7 @@ package com.sogouime.hackathon4.vknowa.middle;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.widget.Toast;
 
 import com.hankcs.textrank.TextRankKeyword;
 import com.sogouime.hackathon4.vknowa.entity.LexerWords;
@@ -178,7 +179,28 @@ public class Controller {
                                 //提示保存失败
                             }
                             */
-                            TtidfModel.GetInstance().insertNewMemo(voiceFilePath, voiceText, wordList);
+                            if (TtidfModel.GetInstance().insertNewMemo(voiceFilePath, voiceText, wordList) )
+                            {
+                                if (null != mNewActivity ) {
+                                    mNewActivity.runOnUiThread(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            Toast.makeText(mNewActivity, "备忘成功!", Toast.LENGTH_LONG).show();
+                                        }
+                                    });
+                                }
+                            }
+                            else
+                            {
+                                if (null != mNewActivity ) {
+                                    mNewActivity.runOnUiThread(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            Toast.makeText(mNewActivity, "备忘失败，请重试!", Toast.LENGTH_LONG).show();
+                                        }
+                                    });
+                                }
+                            }
                         }
                         else
                         {
@@ -196,7 +218,14 @@ public class Controller {
                                 {
                                     try
                                     {
-                                        VoicePlayer.PlayVoice(voiceFile);
+                                        if ( voiceFile == null || voiceFile.isEmpty() )
+                                        {
+                                            VoicePlayer.PlayVoice("/sdcard/research/voice/right_1503755664299.wav");
+                                        }
+                                        else
+                                        {
+                                            VoicePlayer.PlayVoice(voiceFile);
+                                        }
                                     } catch (Exception e)
                                     {
                                         e.printStackTrace();

@@ -6,7 +6,7 @@
     <ImageView
         android:id="@+id/voice_wave_image"
         android:layout_width="fill_parent"
-        android:layout_height="300dp"
+        android:layout_height="100dp"
         android:layout_centerInParent="true"
         android:background="@android:color/darker_gray"
         android:gravity="center"

@@ -704,6 +704,11 @@ public class NewActivity extends Activity implements OutsideCallListener {
 		registerReceiver(phoneStateReceiver, phoneFilter);
 	}
 
+	protected void onStop() {
+		super.onStop();
+		TtidfModel.GetInstance().SaveToDB();
+	}
+
 	// add onDestroy, 2014-04-01
 	@Override
 	protected void onDestroy() {

@@ -63,7 +63,7 @@ public class TtidfModel {
 
     public boolean LoadFromDB()
     {
-        ClearHistoryTB();
+        //ClearHistoryTB();
         CreateAllTf();
         CreateIdf();
         m_totalFileNums = SqliteUtils.getInstance().GetTotalFiles();
